@@ -21,12 +21,6 @@ public class UserController {
         return userService.createUser(userCreateRequest);
     }
 
-    @PostMapping("sign-up")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto registerUser(@Valid @RequestBody UserRegistrationRequest request) {
-        return userService.registerUser(request);
-    }
-
     @PatchMapping("{userId}")
     public UserDto updateUser(@PathVariable Long userId, @RequestBody UserUpdateRequest request) {
         return userService.updateUser(userId, request);

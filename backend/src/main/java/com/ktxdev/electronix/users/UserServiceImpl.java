@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto registerUser(UserRegistrationRequest request) {
+    public User registerUser(UserRegistrationRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             throw new BadRequestException("Email is already in use");
         }
@@ -41,11 +42,10 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userMapper.fromRegistrationRequest(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(UserRole.CLIENT);
 
-        // TODO publish event to send email to activate account
-
-        return userMapper.toDto(userRepository.save(user));
+        return userRepository.save(user);
     }
 
     @Override
@@ -109,6 +109,11 @@ public class UserServiceImpl implements UserService {
             user.setDeleted(true);
             userRepository.save(user);
         }
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     private User findById(Long userId) {
