@@ -1,6 +1,5 @@
 package com.ktxdev.electronix.users;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

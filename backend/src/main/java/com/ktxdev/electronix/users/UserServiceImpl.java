@@ -1,6 +1,7 @@
 package com.ktxdev.electronix.users;
 
 import com.ktxdev.electronix.core.exceptions.BadRequestException;
+import com.ktxdev.electronix.core.exceptions.ForbiddenActionException;
 import com.ktxdev.electronix.core.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,6 +53,10 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long userId, UserUpdateRequest request) {
         User user = findById(userId);
 
+        if (user.getRole().equals(UserRole.SYSTEM_ADMIN)) {
+            throw new ForbiddenActionException("Default system admin details cannot be modified");
+        }
+
         if (Objects.nonNull(request.firstName())) {
             user.setFirstName(request.firstName());
         }
@@ -78,6 +83,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto changeUserPassword(Long userId, UserPasswordChangeRequest request) {
         User user = findById(userId);
+
+        if (user.getRole().equals(UserRole.SYSTEM_ADMIN)) {
+            throw new ForbiddenActionException("Default system admin details cannot be modified");
+        }
+
         boolean isOldPasswordCorrect = passwordEncoder.matches(request.oldPassword(), user.getPassword());
 
         if (!isOldPasswordCorrect) {
