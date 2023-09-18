@@ -16,7 +16,8 @@ public class UserInitializingBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         User user = User.builder()
-                .name("System Administrator")
+                .firstName("System")
+                .lastName("Administrator")
                 .email(applicationProperties.getSystemEmail())
                 .password(passwordEncoder.encode(applicationProperties.getSystemPassword()))
                 .role(UserRole.SYSTEM_ADMIN)

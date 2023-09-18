@@ -52,8 +52,12 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long userId, UserUpdateRequest request) {
         User user = findById(userId);
 
-        if (Objects.nonNull(request.name())) {
-            user.setName(request.name());
+        if (Objects.nonNull(request.firstName())) {
+            user.setFirstName(request.firstName());
+        }
+
+        if (Objects.nonNull(request.lastName())) {
+            user.setLastName(request.lastName());
         }
 
         if (Objects.nonNull(request.email())) {
