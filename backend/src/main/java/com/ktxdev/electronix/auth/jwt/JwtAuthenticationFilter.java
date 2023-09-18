@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String bearerTokenPrefix = "Bearer ";
 
         if (Objects.isNull(authenticationHeader) || !authenticationHeader.startsWith(bearerTokenPrefix)) {
-            System.out.println("Failed to authenticate");
             filterChain.doFilter(request, response);
             return;
         }
@@ -48,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if (jwtService.isValidToken(jwtToken, userDetails)) {
-                System.out.println("Authenticating...");
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -59,8 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
-
-        System.out.println("Everything good!");
 
         filterChain.doFilter(request, response);
     }
