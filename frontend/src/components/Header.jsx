@@ -1,19 +1,15 @@
 import userDefault from "../assets/images/user-default.png";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
-export default function Header({showProfileOptions, onToggleProfileOptions}) {
+export default function Header({ showProfileOptions, onToggleProfileOptions }) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
-    const navigate = useNavigate();
-
-    function handleNavigateToProfileSettings() {
-        onToggleProfileOptions();
-        navigate("/admin/profile");
-    }
-
-    function handleLogout() {
-      localStorage.removeItem("accessToken");
-      navigate("/login", { replace: true })
-    }
+  function handleNavigateToProfileSettings() {
+    onToggleProfileOptions();
+    navigate("/admin/profile");
+  }
 
   return (
     <header className="relative z-10 bg-white border-b border-gray border-solid py-5 px-8 pr-8">
@@ -87,7 +83,7 @@ export default function Header({showProfileOptions, onToggleProfileOptions}) {
             <ul>
               <li>
                 <button
-                    onClick={handleNavigateToProfileSettings}
+                  onClick={handleNavigateToProfileSettings}
                   className="px-5 text-left py-2 w-full block hover:bg-gray rounded-md hover:text-theme text-base"
                 >
                   Profile Settings
@@ -95,7 +91,7 @@ export default function Header({showProfileOptions, onToggleProfileOptions}) {
               </li>
               <li>
                 <button
-                onClick={handleLogout}
+                  onClick={logout}
                   className="px-5 text-left py-2 w-full block hover:bg-gray rounded-md hover:text-theme text-base"
                 >
                   Logout

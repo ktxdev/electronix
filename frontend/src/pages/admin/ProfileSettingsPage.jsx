@@ -3,8 +3,8 @@ import coverDefault from "../../assets/images/default-cover.jpeg";
 import BasicInfomation from "../../components/BasicInfomation";
 import Security from "../../components/Security";
 import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
-const accessToken = localStorage.getItem("accessToken");
 
 function ProfileSettingsPage() {
   const [userDetails, setProfileInfo] = useState({
@@ -13,6 +13,8 @@ function ProfileSettingsPage() {
     lastName: "",
     email: "",
   });
+
+  const {accessToken} = useAuth();
 
   function handleChangeProfileInfo(e) {
     const name = e.target.name;
@@ -38,7 +40,7 @@ function ProfileSettingsPage() {
     }
 
     fetchMyProfile();
-  }, []);
+  }, [accessToken]);
 
   return (
     <div>

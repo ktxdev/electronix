@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
 import Button from "./Button";
-
-const accessToken = localStorage.getItem("accessToken");
+import { useAuth } from "../contexts/AuthContext";
+import { useAlert } from "../contexts/AlertContext";
 
 function BasicInfomation({ userDetails, onProfileInfoChanged }) {
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
+
+
+  const {accessToken} = useAuth();
+  const {showAlert} = useAlert();
 
   async function saveBasicInfomation() {
     const response = await fetch(
@@ -22,37 +23,15 @@ function BasicInfomation({ userDetails, onProfileInfoChanged }) {
     const data = await response.json();
 
     if (response.status !== 200) {
-      setErrorMessage(data.message);
-      setShowErrorMessage(true);
+      showAlert("Error", data.message);
       return;
     }
 
     console.log(data);
   }
 
-  useEffect(() => {
-    setTimeout(() => {
-      setErrorMessage("");
-      setShowErrorMessage(false);
-    }, 10000);
-  }, [errorMessage]);
-
   return (
     <div className="py-10 px-10 bg-white rounded-md">
-      {/** Notification */}
-      <div
-        className={`${
-          showErrorMessage ? "flex" : "hidden"
-        } absolute shadow-sm top-0 right-0 z-50 p-4 m-4 gap-2 bg-red-500 text-white transition-all`}
-      >
-        <p>{errorMessage}</p>
-        <button
-          onClick={() => setShowErrorMessage(false)}
-          className="bg-white rounded-full w-6 h-6 text-black"
-        >
-          <span>&times;</span>
-        </button>
-      </div>
 
       <h5 className="text-xl mb-6">Basic Information</h5>
 

@@ -1,33 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Button from "./Button";
+import { useAuth } from "../contexts/AuthContext";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
+  const {login} = useAuth();
 
-  async function handleOnSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    
-    const response = await fetch('http://localhost:8080/api/v1/auth/authenticate', {
-      method: "POST", 
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }), // body data type must match "Content-Type" header
-    });
-
-    const data = await response.json();
-
-    localStorage.setItem("accessToken", data.accessToken);
-
-    navigate("/admin")
+    login(email, password);
   }
 
   return (
-    <form onSubmit={handleOnSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="mb-5">
         <p className="mb-0 text-base text-black">
           Email <span className="text-red-600">*</span>
