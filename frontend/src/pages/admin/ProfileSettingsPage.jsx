@@ -2,45 +2,12 @@ import userDefault from "../../assets/images/user-default.png";
 import coverDefault from "../../assets/images/default-cover.jpeg";
 import BasicInfomation from "../../components/BasicInfomation";
 import Security from "../../components/Security";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 
 
 function ProfileSettingsPage() {
-  const [userDetails, setProfileInfo] = useState({
-    id: null,
-    firstName: "",
-    lastName: "",
-    email: "",
-  });
-
-  const {accessToken} = useAuth();
-
-  function handleChangeProfileInfo(e) {
-    const name = e.target.name;
-    const value = e.target.value;
-
-    setProfileInfo((info) => ({ ...info, [name]: value }));
-  }
-
-  useEffect(() => {
-    async function fetchMyProfile() {
-      const response = await fetch(
-        "http://localhost:8080/api/v1/users/my-profile",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-
-      setProfileInfo(data);
-    }
-
-    fetchMyProfile();
-  }, [accessToken]);
+  const {user} = useAuth();
 
   return (
     <div>
@@ -49,6 +16,10 @@ function ProfileSettingsPage() {
           <h3 className="mb-0 text-[28px]">My Profile</h3>
         </div>
       </div>
+
+      <div className="grid grid-cols-12 gap-6">
+        <div className="col-span-12 2xl:col-span-8 flex flex-col gap-4">
+
 
       <div className="bg-white rounded-md overflow-hidden mb-10">
         <div className="relative h-[200px] w-full">
@@ -109,18 +80,13 @@ function ProfileSettingsPage() {
             </label>
           </div>
           <div>
-            <h5 className="text-xl mb-0">Sean Huvaya</h5>
+            <h5 className="text-xl mb-0">{user.firstName} {user.lastName}</h5>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 2xl:col-span-8 flex flex-col gap-4">
-          <BasicInfomation
-            userDetails={userDetails}
-            onProfileInfoChanged={handleChangeProfileInfo}
-          />
-          <Security userDetails={userDetails} />
+          <BasicInfomation />
+          <Security />
         </div>
       </div>
     </div>

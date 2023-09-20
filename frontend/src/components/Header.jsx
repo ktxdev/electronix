@@ -4,7 +4,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function Header({ showProfileOptions, onToggleProfileOptions }) {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   function handleNavigateToProfileSettings() {
     onToggleProfileOptions();
@@ -76,8 +76,8 @@ export default function Header({ showProfileOptions, onToggleProfileOptions }) {
                 />
               </div>
               <div>
-                <h5 className="text-base mb-1 leading-none">Sean Huvaya</h5>
-                <p className="mb-0 text-tiny leading-none">sean@mail.com</p>
+                <h5 className="text-base mb-1 leading-none">{user.firstName} {user.lastName}</h5>
+                <p className="mb-0 text-tiny leading-none">{user.email}</p>
               </div>
             </div>
             <ul>

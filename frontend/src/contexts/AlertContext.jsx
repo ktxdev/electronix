@@ -6,10 +6,12 @@ const AlertContext = createContext();
 function AlertProvider({ children }) {
   const [message, setMessage] = useState(null);
   const [title, setTitle] = useState(null);
+  const [details, setDetails] = useState([]);
 
-  function showAlert(title, message) {
+  function showAlert(title, message, details = []) {
     setTitle(title);
     setMessage(message);
+    setDetails(details);
 
     setTimeout(reset, 10000);
   }
@@ -17,11 +19,12 @@ function AlertProvider({ children }) {
   function reset() {
     setTitle(null);
     setMessage(null);
+    setDetails([]);
   }
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
-      {title && message && <Alert title={title} message={message} onClose={reset} />}
+      {title && message && <Alert title={title} message={message} details={details} onClose={reset} />}
       {children}
     </AlertContext.Provider>
   );

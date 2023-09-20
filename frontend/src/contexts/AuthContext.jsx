@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useAlert } from "./AlertContext";
 import { useNavigate } from "react-router-dom";
 
@@ -6,10 +6,32 @@ const AuthContext = createContext();
 
 function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState("");
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
   const {showAlert} = useAlert();
 
   const isAuthenticated = accessToken !== "";
+
+  useEffect(() => {
+    if(!accessToken) return;
+
+    async function fetchLoggedInUser() {
+      const response = await fetch(
+        "http://localhost:8080/api/v1/users/my-profile",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      setUser(data);
+    }
+
+    fetchLoggedInUser();
+  }, [accessToken])
 
   async function login(email, password) {
     const response = await fetch(
@@ -37,11 +59,12 @@ function AuthProvider({ children }) {
 
   function logout() {
     setAccessToken("");
+    setUser({});
     navigate("/login", { replace: true });
   }
 
   return (
-    <AuthContext.Provider value={{ accessToken, isAuthenticated, login, logout }} >
+    <AuthContext.Provider value={{ accessToken, user, isAuthenticated, setUser, login, logout }} >
       {children}
     </AuthContext.Provider>
   );

@@ -1,25 +1,34 @@
 import Button from "./Button";
 import { useAuth } from "../contexts/AuthContext";
 import { useAlert } from "../contexts/AlertContext";
+import { useState } from "react";
 
-function BasicInfomation({ userDetails, onProfileInfoChanged }) {
+function BasicInfomation() {
 
-
-  const {accessToken} = useAuth();
+  const {accessToken, user, setUser} = useAuth();
   const {showAlert} = useAlert();
+
+  const [updatedUser, setUpdatedUser] = useState(user);
+
+  function handleInputChanged(e) {
+    setUpdatedUser(u => ({...u, [e.target.name]: e.target.value}));
+  }
 
   async function saveBasicInfomation() {
     const response = await fetch(
-      `http://localhost:8080/api/v1/users/${userDetails.id}`,
+      `http://localhost:8080/api/v1/users/${updatedUser.id}`,
       {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(userDetails),
+        body: JSON.stringify(updatedUser),
       }
     );
+
+    console.log(updatedUser);
+
     const data = await response.json();
 
     if (response.status !== 200) {
@@ -27,7 +36,7 @@ function BasicInfomation({ userDetails, onProfileInfoChanged }) {
       return;
     }
 
-    console.log(data);
+    setUser(data);
   }
 
   return (
@@ -44,8 +53,8 @@ function BasicInfomation({ userDetails, onProfileInfoChanged }) {
               type="text"
               placeholder="First Name"
               name="firstName"
-              value={userDetails.firstName}
-              onChange={onProfileInfoChanged}
+              value={updatedUser.firstName}
+              onChange={handleInputChanged}
             />
           </div>
           <div className="mb-5">
@@ -55,8 +64,8 @@ function BasicInfomation({ userDetails, onProfileInfoChanged }) {
               type="text"
               placeholder="Last Name"
               name="lastName"
-              value={userDetails.lastName}
-              onChange={onProfileInfoChanged}
+              value={updatedUser.lastName}
+              onChange={handleInputChanged}
             />
           </div>
         </div>
@@ -67,8 +76,8 @@ function BasicInfomation({ userDetails, onProfileInfoChanged }) {
             type="email"
             placeholder="Email"
             name="email"
-            value={userDetails.email}
-            onChange={onProfileInfoChanged}
+            value={updatedUser.email}
+            onChange={handleInputChanged}
           />
         </div>
         <div className="flex justify-end mt-5">

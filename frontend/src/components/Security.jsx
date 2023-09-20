@@ -3,16 +3,15 @@ import Button from "./Button";
 import { useAuth } from "../contexts/AuthContext";
 import { useAlert } from "../contexts/AlertContext";
 
-function Security({ userDetails }) {
+function Security() {
   const [securityInfo, setSecurityInfo] = useState({
     oldPassword: "",
     newPassword: "",
     newPasswordConfirmation: "",
   });
 
-
-  const {accessToken} = useAuth();
-  const {showAlert} = useAlert();
+  const { accessToken, user } = useAuth();
+  const { showAlert } = useAlert();
 
   function handleInputChange(e) {
     setSecurityInfo((info) => ({ ...info, [e.target.name]: e.target.value }));
@@ -20,7 +19,7 @@ function Security({ userDetails }) {
 
   async function handleChangePassword() {
     const response = await fetch(
-      `http://localhost:8080/api/v1/users/${userDetails.id}/change-password`,
+      `http://localhost:8080/api/v1/users/${user.id}/change-password`,
       {
         method: "PATCH",
         headers: {
@@ -32,8 +31,20 @@ function Security({ userDetails }) {
     );
     const data = await response.json();
 
+    if (response.status === 400) {
+      const message = (
+        <ul className="text-sm list-disc">
+          {data.errorDetails.map((detail) => (
+            <li key={detail.description}>{detail.description}</li>
+          ))}
+        </ul>
+      );
+      showAlert(data.message, message);
+      return;
+    }
+
     if (response.status !== 200) {
-      showAlert("Error", data.message)
+      showAlert("Error", data.message);
       return;
     }
 
