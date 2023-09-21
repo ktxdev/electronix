@@ -18,7 +18,7 @@ function Button({ children, className = "", type = "", disabled=false, onClick }
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`${className} ${additionalStyles} h-12 cursor-pointer justify-center disabled:cursor-not-allowed items-center rounded-md  py-1 px-5 text-sm font-medium tracking-wide transition-all`}
+      className={`${additionalStyles} h-12 cursor-pointer justify-center disabled:cursor-not-allowed items-center rounded-md  py-1 px-5 text-sm font-medium tracking-wide transition-all`}
     >
       {children}
     </button>

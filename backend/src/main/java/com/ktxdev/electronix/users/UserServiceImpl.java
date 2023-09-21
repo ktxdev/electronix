@@ -121,6 +121,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto fetchUserById(Long userId) {
+        return userMapper.toDto(findById(userId));
+    }
+
+    @Override
     public void deleteUser(Long userId) {
         User user = findById(userId);
         try {

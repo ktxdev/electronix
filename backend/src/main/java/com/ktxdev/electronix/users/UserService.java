@@ -14,4 +14,6 @@ public interface UserService {
     Page<UserDto> fetchAllUsers(Pageable pageable);
     void deleteUser(Long userId);
     Optional<User> findByEmail(String email);
+
+    UserDto fetchUserById(Long userId);
 }

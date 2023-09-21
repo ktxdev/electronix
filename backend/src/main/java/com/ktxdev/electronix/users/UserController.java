@@ -41,6 +41,11 @@ public class UserController {
         return userService.fetchAllUsers(pageable);
     }
 
+    @GetMapping("{userId}")
+    public UserDto fetchAllUsers(@PathVariable Long userId) {
+        return userService.fetchUserById(userId);
+    }
+
     @DeleteMapping("{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) {

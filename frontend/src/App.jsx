@@ -33,6 +33,7 @@ function App() {
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="users/new" element={<UserInfo />} />
+              <Route path="users/edit/:userId" element={<UserInfo />} />
               <Route path="profile" element={<ProfileSettingsPage />} />
             </Route>
           </Routes>
