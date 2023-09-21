@@ -1,1 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/electronix?createDatabaseIfNotExist=true
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
 
+app:
+  jwt-token-secret: 'Nk1EUkFxZVB4Q2MvN3Z0SEhLdDJIQm9BOFRXT21tMFdwL1k0UW1kcnFCc0xjaU1aWnFYQWtiS0svcWdmbDJCaA=='
+  jwt-expiration-millis: 360000
+  system-email: 'system@electronix.com'
+  system-password: 'password'
