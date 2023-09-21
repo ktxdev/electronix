@@ -12,6 +12,7 @@ import ProfileSettingsPage from "./pages/admin/ProfileSettingsPage";
 import { AlertProvider } from "./contexts/AlertContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserInfo from "./pages/admin/UserInfo";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="users/new" element={<UserInfo />} />
               <Route path="profile" element={<ProfileSettingsPage />} />
             </Route>
           </Routes>

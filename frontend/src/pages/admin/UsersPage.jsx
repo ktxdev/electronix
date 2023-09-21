@@ -42,8 +42,8 @@ function UsersPage() {
             </button>
           </div>
           <Link
-            to="user-details"
-            className="text-md rounded-md py-1 px-5 font-medium bg-blue-500 hover:bg-blue-700 text-white items-center inline-flex transition-all "
+            to="new"
+            className="bg-blue-500 hover:bg-blue-700 text-white text-base flex items-center justify-center h-10 cursor-pointer rounded-md px-5 font-medium tracking-wide transition-all"
           >
             Create User
           </Link>

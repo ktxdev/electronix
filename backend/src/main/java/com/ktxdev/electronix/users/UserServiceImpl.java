@@ -25,7 +25,13 @@ public class UserServiceImpl implements UserService {
             throw new BadRequestException("Email is already in use");
         }
 
+        if (!request.password().equals(request.passwordConfirmation())) {
+            throw new BadRequestException("Passwords do not match");
+        }
+
         User user = userMapper.fromCreateRequest(request);
+        user.setRole(UserRole.ADMIN);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         // TODO generate password and save the encoded string
         // TODO fire event to send password via email
 

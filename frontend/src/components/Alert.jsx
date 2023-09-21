@@ -1,13 +1,15 @@
-function Alert({ title, message, onClose }) {
+function Alert({ title, message, type, onClose }) {
+  let additionalStyles = type === "error" ?  "bg-red-100 border-red-500 text-red-900" : "bg-green-100 border-green-500 text-green-900";
+
   return (
     <div
-      className="fixed top-0 right-0 z-50 my-4 mx-8 bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md"
+      className={`${additionalStyles} fixed top-0 right-0 z-50 my-4 mx-8 border-t-4  rounded-b px-4 py-3 shadow-md`}
       role="alert"
     >
       <div className="flex items-center gap-4">
         <div className="py-1">
           <svg
-            className="fill-current h-6 w-6 text-red-500 mr-4"
+            className={`fill-current h-6 w-6 mr-4 ${type === "error" ? "text-red-500" : "text-green-500"}`}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
           >
@@ -20,7 +22,7 @@ function Alert({ title, message, onClose }) {
         </div>
         <button className="self-start" onClick={onClose}>
           <svg
-            className="fill-current h-6 w-6 text-red-500"
+            className={`fill-current h-6 w-6 ${type === "error" ? "text-red-500" : "text-green-500"}`}
             role="button"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"

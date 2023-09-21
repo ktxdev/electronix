@@ -1,12 +1,14 @@
 import { useState } from "react";
 import Button from "./Button";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const {login} = useAuth();
+  const { login, loading } = useAuth();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -49,7 +51,15 @@ function LoginForm() {
           </a>
         </div>
       </div>
-      <Button className="w-full">Sign In</Button>
+      <Button className="w-full" type="primary" disabled={loading}>
+        {!loading && <span>Sign In</span>}
+        {loading && (
+          <>
+            <span className="mr-5">Signing In...</span>
+            <Spinner size={6} />
+          </>
+        )}
+      </Button>
     </form>
   );
 }

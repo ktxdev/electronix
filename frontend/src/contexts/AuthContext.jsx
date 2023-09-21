@@ -7,6 +7,7 @@ const AuthContext = createContext();
 function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState("");
   const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const {showAlert} = useAlert();
 
@@ -34,6 +35,8 @@ function AuthProvider({ children }) {
   }, [accessToken])
 
   async function login(email, password) {
+    setLoading(true);
+
     const response = await fetch(
       "http://localhost:8080/api/v1/auth/authenticate",
       {
@@ -49,10 +52,12 @@ function AuthProvider({ children }) {
 
     if(response.status !== 200) {
       showAlert("Error", "Signing in failed! Please try again.");
+      setLoading(false)
       return;
     }
 
     setAccessToken(data.accessToken);
+    setLoading(false);
 
     navigate("/admin");
   }
