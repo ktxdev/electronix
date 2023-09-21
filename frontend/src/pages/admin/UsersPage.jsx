@@ -20,7 +20,7 @@ function UsersPage() {
 
   async function fetchAllUsers(page) {
     const response = await fetch(
-      `http://localhost:8080/api/v1/users?page=${page || currentPage}&size=2`,
+      `http://localhost:8080/api/v1/users?page=${page || currentPage}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -92,16 +92,24 @@ function UsersPage() {
         </div>
 
         <div className="relative overflow-x-auto  mx-8">
-          <UsersTable users={users} />
+          {users.length === 0 && (
+            <p>
+              No users found! You can create one by clicking on the &quot;Create
+              User&quot; button
+            </p>
+          )}
+          {users.length !== 0 && <UsersTable users={users} />}
         </div>
 
-        <Pagination
-          numberOfElements={numberOfElements}
-          totalElements={totalElements}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
+        {users.length !== 0 && (
+          <Pagination
+            numberOfElements={numberOfElements}
+            totalElements={totalElements}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </div>
   );

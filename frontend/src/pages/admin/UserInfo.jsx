@@ -19,7 +19,7 @@ function UserInfo() {
 
   const { userId } = useParams();
 
-  const isEditing = user !== undefined;
+  const isEditing = userId !== undefined;
 
   const navigate = useNavigate();
 
@@ -213,7 +213,7 @@ function UserInfo() {
               </>
             )}
             <div className="flex justify-between mt-10">
-              <Button onClick={() => navigate(-1)}>Cancel</Button>
+              <Button disabled={isLoading} onClick={() => navigate(-1)}>Cancel</Button>
               <Button
                 className="flex items-center gap-4"
                 type="primary"
