@@ -1,13 +1,18 @@
 package com.ktxdev.electronix.users;
 
+import com.ktxdev.electronix.config.S3ConfigProperties;
 import com.ktxdev.electronix.core.exceptions.BadRequestException;
 import com.ktxdev.electronix.core.exceptions.ForbiddenActionException;
 import com.ktxdev.electronix.core.exceptions.ResourceNotFoundException;
+import com.ktxdev.electronix.storage.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -17,7 +22,9 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final StorageService storageService;
     private final PasswordEncoder passwordEncoder;
+    private final S3ConfigProperties s3ConfigProperties;
 
     @Override
     public UserDto createUser(UserCreateRequest request) {
@@ -57,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(Long userId, UserUpdateRequest request) {
-        User user = findById(userId);
+        User user = findByIdOrThrow(userId);
 
         if (user.getRole().equals(UserRole.SYSTEM_ADMIN)) {
             throw new ForbiddenActionException("Default system admin details cannot be modified");
@@ -88,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto changeUserPassword(Long userId, UserPasswordChangeRequest request) {
-        User user = findById(userId);
+        User user = findByIdOrThrow(userId);
 
         if (user.getRole().equals(UserRole.SYSTEM_ADMIN)) {
             throw new ForbiddenActionException("Default system admin details cannot be modified");
@@ -122,12 +129,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto fetchUserById(Long userId) {
-        return userMapper.toDto(findById(userId));
+        return userMapper.toDto(findByIdOrThrow(userId));
     }
 
     @Override
     public void deleteUser(Long userId) {
-        User user = findById(userId);
+        User user = findByIdOrThrow(userId);
         try {
             userRepository.delete(user);
         } catch (Exception ex) {
@@ -141,7 +148,27 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email);
     }
 
-    private User findById(Long userId) {
+    @Override
+    public void uploadProfileImage(Long userId, MultipartFile file) {
+        User user = findByIdOrThrow(userId);
+        if (Objects.nonNull(file.getContentType()) && !file.getContentType().startsWith("image/")) {
+            throw new BadRequestException("Unsupported file type profile picture should be an image");
+        }
+        String profileImageId = storageService.uploadFile(s3ConfigProperties.getProfileDir(), file);
+        user.setProfileImageId(profileImageId);
+        userRepository.save(user);
+    }
+
+    @Override
+    public Resource getProfileImage(Long userId) {
+        User user = findByIdOrThrow(userId);
+        if (Objects.isNull(user.getProfileImageId())) {
+            return new ByteArrayResource(new byte[0]);
+        }
+        return storageService.downloadFile(user.getProfileImageId());
+    }
+
+    private User findByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id: %d not found", userId));
     }

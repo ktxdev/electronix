@@ -16,6 +16,12 @@ spring:
 
 app:
   jwt-token-secret: 'Nk1EUkFxZVB4Q2MvN3Z0SEhLdDJIQm9BOFRXT21tMFdwL1k0UW1kcnFCc0xjaU1aWnFYQWtiS0svcWdmbDJCaA=='
-  jwt-expiration-millis: 360000
+  jwt-expiration-millis: 3600000
   system-email: 'system@electronix.com'
   system-password: 'password'
+
+aws:
+  region: eu-north-1
+  s3:
+    bucket-name: 'electronix-ktxdev'
+    profile-dir: 'profiles'

@@ -19,7 +19,20 @@
         <org.projectlombok.version>1.18.28</org.projectlombok.version>
         <org.apache.maven-compiler-plugin.version>3.8.1</org.apache.maven-compiler-plugin.version>
         <io.jsonwebtoken.version>0.11.5</io.jsonwebtoken.version>
+        <aws.java.sdk.version>2.20.43</aws.java.sdk.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws.java.sdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -79,6 +92,11 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
             <version>${io.jsonwebtoken.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
         </dependency>
     </dependencies>
 
