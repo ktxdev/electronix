@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useAlert } from "../../contexts/AlertContext";
 import { useAuth } from "../../contexts/AuthContext";
 
-function UserInfo() {
+function UserInfoPage() {
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -231,4 +231,4 @@ function UserInfo() {
   );
 }
 
-export default UserInfo;
+export default UserInfoPage;
