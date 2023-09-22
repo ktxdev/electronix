@@ -93,8 +93,8 @@ function UsersPage() {
 
         <div className="relative overflow-x-auto  mx-8">
           {users.length === 0 && (
-            <p>
-              No users found! You can create one by clicking on the &quot;Create
+            <p className="flex justify-center items-center py-20 text-center text-gray-600 text-xl">
+              No users found! <br/> You can create one by clicking on the &quot;Create
               User&quot; button
             </p>
           )}

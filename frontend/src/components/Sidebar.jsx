@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 
 import dashboardIcon from "../assets/images/dashboard-icon.svg";
 import usersIcon from "../assets/images/users-icon.svg";
+import cartIcon from "../assets/images/cart-icon.svg";
 import SidebarItem from "./SidebarItem";
 import logo from '../assets/images/logo-full.png';
 
 const SIDEBAR_ITEMS = [
   { title: "Dashboard", icon: dashboardIcon, to: "/admin" },
+  { title: "Categories", icon: cartIcon, to: "/admin/categories" },
   { title: "Users", icon: usersIcon, to: "/admin/users" },
 ];
 

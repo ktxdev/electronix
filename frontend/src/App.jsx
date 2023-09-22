@@ -12,7 +12,8 @@ import ProfileSettingsPage from "./pages/admin/ProfileSettingsPage";
 import { AlertProvider } from "./contexts/AlertContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import UserInfo from "./pages/admin/UserInfo";
+import UserInfoPage from "./pages/admin/UserInfoPage";
+import CategoriesPage from "./pages/admin/CategoriesPage";
 
 function App() {
   return (
@@ -31,9 +32,10 @@ function App() {
             >
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="categories" element={<CategoriesPage />}/>
               <Route path="users" element={<UsersPage />} />
-              <Route path="users/new" element={<UserInfo />} />
-              <Route path="users/edit/:userId" element={<UserInfo />} />
+              <Route path="users/new" element={<UserInfoPage />} />
+              <Route path="users/edit/:userId" element={<UserInfoPage />} />
               <Route path="profile" element={<ProfileSettingsPage />} />
             </Route>
           </Routes>
