@@ -135,6 +135,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         User user = findByIdOrThrow(userId);
+        // TODO Also delete files associated with user
         try {
             userRepository.delete(user);
         } catch (Exception ex) {
@@ -154,7 +155,8 @@ public class UserServiceImpl implements UserService {
         if (Objects.nonNull(file.getContentType()) && !file.getContentType().startsWith("image/")) {
             throw new BadRequestException("Unsupported file type profile picture should be an image");
         }
-        String profileImageId = storageService.uploadFile(s3ConfigProperties.getProfileDir(), file);
+        String uploadDir = "%s/%d".formatted(s3ConfigProperties.getProfileDir(), userId);
+        String profileImageId = storageService.uploadFile(uploadDir, file);
         user.setProfileImageId(profileImageId);
         userRepository.save(user);
     }
