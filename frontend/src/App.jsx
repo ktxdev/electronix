@@ -14,6 +14,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import UserInfoPage from "./pages/admin/UserInfoPage";
 import CategoriesPage from "./pages/admin/CategoriesPage";
+import Button from "./components/Button";
 
 function App() {
   return (
