@@ -3,7 +3,7 @@ function Alert({ title, message, type, onClose }) {
 
   return (
     <div
-      className={`${additionalStyles} fixed top-0 right-0 z-50 my-4 mx-8 border-t-4  rounded-b px-4 py-3 shadow-md`}
+      className={`${additionalStyles} fixed top-0 right-0 z-40 my-4 mx-8 border-t-4  rounded-b px-4 py-3 shadow-md`}
       role="alert"
     >
       <div className="flex items-center gap-4">

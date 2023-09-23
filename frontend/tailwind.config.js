@@ -26,6 +26,9 @@ export default {
         "2px": "2px",
         "-50%": "-50%",
       },
+      colors: {
+        "overlay": "rgba(0, 0, 0, 0.5)"
+      }
     },
   },
   plugins: [],

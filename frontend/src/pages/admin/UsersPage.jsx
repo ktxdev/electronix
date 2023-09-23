@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import Pagination from "../../components/Pagination";
 import UsersTable from "../../components/UsersTable";
+import { useAlert } from "../../contexts/AlertContext";
 
 function UsersPage() {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,8 @@ function UsersPage() {
   const [numberOfElements, setNumberOfElements] = useState(null);
   const [totalElements, setTotalElements] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const {showAlert} = useAlert();
 
   useEffect(() => {
     fetchAllUsers(currentPage);
@@ -34,6 +37,29 @@ function UsersPage() {
     setNumberOfElements(data.numberOfElements);
     setTotalElements(data.totalElements);
     setUsers(data.content);
+  }
+
+  async function handleDeleteUser(user) {
+    const response = await fetch(
+      `http://localhost:8080/api/v1/users/${user.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (response.status !== 204) {
+      showAlert("Error", "Failed to delete user: " + user.email);
+      setIsLoading(false);
+      return;
+    }
+
+
+    setIsLoading(false);
+    showAlert("Success", "User deleted successfully", "success");
+    fetchAllUsers();
   }
 
   function handlePageChange(page) {
@@ -98,7 +124,7 @@ function UsersPage() {
               User&quot; button
             </p>
           )}
-          {users.length !== 0 && <UsersTable users={users} />}
+          {users.length !== 0 && <UsersTable users={users} onDeleteUser={handleDeleteUser} isLoading={isLoading} />}
         </div>
 
         {users.length !== 0 && (

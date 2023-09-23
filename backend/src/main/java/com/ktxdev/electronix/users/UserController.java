@@ -1,5 +1,6 @@
 package com.ktxdev.electronix.users;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -57,8 +58,8 @@ public class UserController {
     }
 
     @PostMapping(value = "{userId}/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void uploadProfileImage(@PathVariable Long userId, @RequestParam("image") MultipartFile file) {
-        userService.uploadProfileImage(userId, file);
+    public UserDto uploadProfileImage(@PathVariable Long userId, @RequestParam("image") MultipartFile file, HttpServletRequest request) {
+        return userService.uploadProfileImage(userId, file, request);
     }
 
     @GetMapping(value = "{userId}/profile-image", produces = {MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE})

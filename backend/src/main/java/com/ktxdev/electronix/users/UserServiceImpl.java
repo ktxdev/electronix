@@ -5,6 +5,7 @@ import com.ktxdev.electronix.core.exceptions.BadRequestException;
 import com.ktxdev.electronix.core.exceptions.ForbiddenActionException;
 import com.ktxdev.electronix.core.exceptions.ResourceNotFoundException;
 import com.ktxdev.electronix.storage.StorageService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -135,6 +137,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         User user = findByIdOrThrow(userId);
+        // TODO Also delete files associated with user
         try {
             userRepository.delete(user);
         } catch (Exception ex) {
@@ -149,14 +152,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void uploadProfileImage(Long userId, MultipartFile file) {
+    public UserDto uploadProfileImage(Long userId, MultipartFile file, HttpServletRequest request) {
         User user = findByIdOrThrow(userId);
         if (Objects.nonNull(file.getContentType()) && !file.getContentType().startsWith("image/")) {
             throw new BadRequestException("Unsupported file type profile picture should be an image");
         }
-        String profileImageId = storageService.uploadFile(s3ConfigProperties.getProfileDir(), file);
+        String uploadDir = "%s/%d".formatted(s3ConfigProperties.getProfileDir(), userId);
+        String profileImageId = storageService.uploadFile(uploadDir, file);
+
+        String profileImageUrl = ServletUriComponentsBuilder.fromRequest(request).build().toUriString();
+
         user.setProfileImageId(profileImageId);
-        userRepository.save(user);
+        user.setProfileImageUrl(profileImageUrl);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
