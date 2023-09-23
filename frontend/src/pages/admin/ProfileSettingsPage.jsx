@@ -1,8 +1,9 @@
 import userDefault from "../../assets/images/user-default.png";
 import coverDefault from "../../assets/images/default-cover.jpeg";
 import BasicInfomation from "../../components/BasicInfomation";
+import Spinner from "../../components/Spinner";
 import Security from "../../components/Security";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useAlert } from "../../contexts/AlertContext";
 
@@ -10,35 +11,49 @@ function ProfileSettingsPage() {
   const profileImageRef = useRef();
   const { user, accessToken } = useAuth();
   const { showAlert } = useAlert();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function getProfileImage() {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/api/v1/users/${user.id}/profile-image`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
+      setIsLoading(true);
+
+      const response = await fetch(
+        `http://localhost:8080/api/v1/users/${user.id}/profile-image`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (response.status !== 200) {
+        showAlert(
+          "Error",
+          "Failed to retrieve profile image! Try refreshing the page"
         );
-
-        
-        const data = await response.blob();
-
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(data);
-
-        fileReader.onload = function () {
-          profileImageRef.current.src = this.result;
-        };
-      } catch (err) {
-        console.log(err);
+        setIsLoading(false);
+        return;
       }
+
+      const data = await response.blob();
+
+      if (data.size === 0) {
+        setIsLoading(false);
+        return;
+      }
+
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(data);
+
+      fileReader.onload = function () {
+        profileImageRef.current.src = this.result;
+      };
+
+      setIsLoading(false);
     }
 
     getProfileImage();
-  }, [user, accessToken]);
+  }, [user, accessToken, showAlert]);
 
   async function handleImageUpload(e) {
     const file = e.target.files[0];
@@ -46,35 +61,33 @@ function ProfileSettingsPage() {
     const formData = new FormData();
     formData.append("image", file, file.name);
 
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/v1/users/${user.id}/profile-image`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: formData,
-        }
-      );
-  
-      const data = await response.json();
-  
-      if (response.status !== 200) {
-        showAlert("Error", data.message || "Failed to upload profile image");
-        return;
+    setIsLoading(true);
+
+    const response = await fetch(
+      `http://localhost:8080/api/v1/users/${user.id}/profile-image`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
       }
-  
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-  
-      fileReader.onload = function () {
-        profileImageRef.current.src = this.result;
-      };
-    } catch(err) {
-      console.log(err);
+    );
+
+    if (response.status !== 200) {
       showAlert("Error", "Failed to upload profile image");
+      setIsLoading(false);
+      return;
     }
+
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+
+    fileReader.onload = function () {
+      profileImageRef.current.src = this.result;
+    };
+
+    setIsLoading(false);
   }
 
   return (
@@ -96,9 +109,14 @@ function ProfileSettingsPage() {
             </div>
             <div className="px-8 pb-8 relative">
               <div className="-mt-[75px] mb-3 relative inline-block">
+                {isLoading && (
+                  <div className="absolute flex justify-center items-center top-0 left-0 w-full h-full">
+                    <Spinner size={6} />
+                  </div>
+                )}
                 <img
                   ref={profileImageRef}
-                  className="w-[150px] h-[150px] rounded-[14px] border-4 border-white bg-white"
+                  className={`w-[150px] h-[150px] rounded-[14px] border-4 border-white bg-white ${isLoading ? 'opacity-50' : 'opacity-100'}`}
                   src={userDefault}
                   alt=""
                 />
