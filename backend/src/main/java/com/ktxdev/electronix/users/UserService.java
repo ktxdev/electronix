@@ -1,5 +1,6 @@
 package com.ktxdev.electronix.users;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,6 @@ public interface UserService {
     void deleteUser(Long userId);
     Optional<User> findByEmail(String email);
     UserDto fetchUserById(Long userId);
-    void uploadProfileImage(Long userId, MultipartFile file);
+    UserDto uploadProfileImage(Long userId, MultipartFile file, HttpServletRequest request);
     Resource getProfileImage(Long userId);
 }

@@ -6,6 +6,7 @@ export default function Header({ showProfileOptions, onToggleProfileOptions }) {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
 
+
   function handleNavigateToProfileSettings() {
     onToggleProfileOptions();
     navigate("/admin/profile");
@@ -58,7 +59,7 @@ export default function Header({ showProfileOptions, onToggleProfileOptions }) {
           >
             <img
               className="w-[40px] h-[40px] rounded-md"
-              src={userDefault}
+              src={user.profileImageUrl || userDefault}
               alt=""
             />
             <span className="w-[12px] h-[12px] inline-block bg-green-500 rounded-full absolute -top-[4px] -right-[4px] border-[2px] border-white"></span>
@@ -68,15 +69,17 @@ export default function Header({ showProfileOptions, onToggleProfileOptions }) {
             style={{ display: `${showProfileOptions ? "block" : "none"}` }}
           >
             <div className="flex items-center space-x-3 border-b border-gray pb-3 mb-2">
-              <div>
+              <div className="relative">
                 <img
                   className="w-[50px] h-[50px] rounded-md"
-                  src={userDefault}
+                  src={user.profileImageUrl || userDefault}
                   alt=""
                 />
               </div>
               <div>
-                <h5 className="text-base mb-1 leading-none">{user.firstName} {user.lastName}</h5>
+                <h5 className="text-base mb-1 leading-none">
+                  {user.firstName} {user.lastName}
+                </h5>
                 <p className="mb-0 text-tiny leading-none">{user.email}</p>
               </div>
             </div>

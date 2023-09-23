@@ -9,51 +9,9 @@ import { useAlert } from "../../contexts/AlertContext";
 
 function ProfileSettingsPage() {
   const profileImageRef = useRef();
-  const { user, accessToken } = useAuth();
+  const { user, setUser, accessToken } = useAuth();
   const { showAlert } = useAlert();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    async function getProfileImage() {
-      setIsLoading(true);
-
-      const response = await fetch(
-        `http://localhost:8080/api/v1/users/${user.id}/profile-image`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
-      if (response.status !== 200) {
-        showAlert(
-          "Error",
-          "Failed to retrieve profile image! Try refreshing the page"
-        );
-        setIsLoading(false);
-        return;
-      }
-
-      const data = await response.blob();
-
-      if (data.size === 0) {
-        setIsLoading(false);
-        return;
-      }
-
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(data);
-
-      fileReader.onload = function () {
-        profileImageRef.current.src = this.result;
-      };
-
-      setIsLoading(false);
-    }
-
-    getProfileImage();
-  }, [user, accessToken, showAlert]);
 
   async function handleImageUpload(e) {
     const file = e.target.files[0];
@@ -79,6 +37,9 @@ function ProfileSettingsPage() {
       setIsLoading(false);
       return;
     }
+
+    const data = await response.json();
+    setUser(data);
 
     const fileReader = new FileReader();
     fileReader.readAsDataURL(file);
@@ -109,15 +70,9 @@ function ProfileSettingsPage() {
             </div>
             <div className="px-8 pb-8 relative">
               <div className="-mt-[75px] mb-3 relative inline-block">
-                {isLoading && (
-                  <div className="absolute flex justify-center items-center top-0 left-0 w-full h-full">
-                    <Spinner size={6} />
-                  </div>
-                )}
                 <img
-                  ref={profileImageRef}
                   className={`w-[150px] h-[150px] rounded-[14px] border-4 border-white bg-white ${isLoading ? 'opacity-50' : 'opacity-100'}`}
-                  src={userDefault}
+                  src={user.profileImageUrl || userDefault}
                   alt=""
                 />
                 <input

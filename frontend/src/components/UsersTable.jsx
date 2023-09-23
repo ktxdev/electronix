@@ -56,7 +56,7 @@ function UsersTable({users = []}) {
                   <td className="px-3 py-3 flex justify-center font-normal text-[#55585B]">
                     <img
                       className="w-[60px] h-[60px] rounded-md"
-                      src={user.photoUrl || userDefault}
+                      src={user.profileImageUrl || userDefault}
                       alt=""
                     />
                   </td>
